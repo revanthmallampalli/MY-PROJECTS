@@ -18,7 +18,7 @@ variable "vpcname" {
   description = "Name of the VPC"
   type = string
 }
-variable "subnets" {
+variable "public_subnets" {
   description = "Name of subnets"
   type = list(string)
 }

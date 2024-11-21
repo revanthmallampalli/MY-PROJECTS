@@ -9,4 +9,4 @@ cidr_block = "10.0.0.0/16"
 hostnames = true
 support = true
 availability_zone = [ "us-east-1a","us-east-1b","us-east-1c" ]
-subnets = [ "subnet-1","subnet-2","subnet-3" ]
+public_subnets = [ "subnet-1","subnet-2","subnet-3" ]
