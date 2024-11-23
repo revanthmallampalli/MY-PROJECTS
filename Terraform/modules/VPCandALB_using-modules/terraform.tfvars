@@ -1,0 +1,12 @@
+region = "us-east-1"
+hostnames =true
+support = true
+albname = "ApplicationALB"
+vpcid = module.vpc.vpcid
+vpcname = "VPCapplication"
+listenerport = 80
+subnetids = module.vpc.subnetids
+health_check_path = "/health"
+tgname = "my-target-group"
+cidr_block = "10.0.0.0/16"
+subnetcount = 3
