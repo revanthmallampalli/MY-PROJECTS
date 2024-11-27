@@ -1,0 +1,60 @@
+pipeline {
+    agent any  // This means the pipeline can run on any available agent
+
+    environment {
+        // Define environment variables here (e.g., credentials, paths)
+        PROJECT_NAME = 'MyJavaProject'
+        BRANCH_NAME = 'main'
+        MAVEN_HOME = '/usr/local/maven'  // Update with your Maven path if necessary
+        DEPLOY_SCRIPT = './deploy.sh'   // Path to your deploy script
+    }
+
+    stages {
+        // Stage 1: Build
+        stage('Build') {
+            steps {
+                echo "Building the project using Maven..."
+                // Run Maven to clean and compile the project
+                sh '''#!/bin/bash
+                    echo "Building the project..."
+                    mvn clean install -DskipTests
+                '''
+            }
+        }
+
+        // Stage 2: Test
+        stage('Test') {
+            steps {
+                echo "Running tests using Maven..."
+                // Run the tests after the build
+                sh '''#!/bin/bash
+                    echo "Running tests..."
+                    mvn test
+                '''
+            }
+        }
+
+        // Stage 3: Deploy
+        stage('Deploy') {
+            steps {
+                echo "Deploying the application..."
+                // Call a shell script or run any deployment command (e.g., AWS CLI, kubectl)
+                sh '''#!/bin/bash
+                    echo "Deploying to production..."
+                    # Example: Deploying with a custom script
+                    bash $DEPLOY_SCRIPT
+                '''
+            }
+        }
+    }
+
+    post {
+        // Actions to perform after pipeline completion (success or failure)
+        success {
+            echo "Pipeline finished successfully! Deployment complete."
+        }
+        failure {
+            echo "Pipeline failed. Please check the logs for errors."
+        }
+    }
+}
