@@ -1,0 +1,40 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build the Docker image
+        run: |
+          docker build -t voter-app .
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 5000:5000 --name voter-app voter-app
+
+      - name: Test the application
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{"age": 20}' http://localhost:5000/vote
+
+      - name: Push Docker image to DockerHub
+        if: success()
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker tag voter-app ${{ secrets.DOCKER_USERNAME }}/voter-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/voter-app:latest
+
