@@ -1,17 +1,21 @@
 pipeline {
     agent any
     
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') 
+    }
+    
     stages {
         stage('Checkout') {
             steps {
                 // Pull the source code from the repository
-                git 'https://github.com/your-repo/your-project.git'
+                git 'https://github.com/your-username/simple-webapp.git'
             }
         }
         
         stage('Build') {
             steps {
-                // Build the application (e.g., using npm)
+                // Build the application
                 sh 'npm install'
             }
         }
@@ -23,11 +27,24 @@ pipeline {
             }
         }
         
+        stage('Build Docker Image') {
+            steps {
+                // Build the Docker image
+                script {
+                    def image = docker.build("your-username/simple-webapp:${env.BUILD_ID}")
+                    image.push()
+                }
+            }
+        }
+        
         stage('Deploy') {
             steps {
-                // Deploy the application (e.g., using Docker)
-                sh 'docker build -t your-app:latest .'
-                sh 'docker run -d -p 80:80 your-app:latest'
+                // Deploy the application
+                sh '''
+                docker stop simple-webapp || true
+                docker rm simple-webapp || true
+                docker run -d -p 3000:3000 --name simple-webapp your-username/simple-webapp:${env.BUILD_ID}
+                '''
             }
         }
     }
@@ -39,3 +56,4 @@ pipeline {
         }
     }
 }
+
