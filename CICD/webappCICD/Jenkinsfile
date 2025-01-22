@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Pull the source code from the repository
-                git 'https://github.com/your-username/simple-webapp.git'
+                git 'https://github.com/revanthmallampalli/MY-PROJECTS/tree/main/CICD/webappCICD'
             }
         }
         
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 // Build the Docker image
                 script {
-                    def image = docker.build("your-username/simple-webapp:${env.BUILD_ID}")
+                    def image = docker.build("revanthmallampalli/simple-webapp:${env.BUILD_ID}")
                     image.push()
                 }
             }
