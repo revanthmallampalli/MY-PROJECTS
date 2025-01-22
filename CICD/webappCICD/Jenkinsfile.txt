@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Pull the source code from the repository
+                git 'https://github.com/your-repo/your-project.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the application (e.g., using npm)
+                sh 'npm install'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                // Run tests
+                sh 'npm test'
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                // Deploy the application (e.g., using Docker)
+                sh 'docker build -t your-app:latest .'
+                sh 'docker run -d -p 80:80 your-app:latest'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up after the job is done
+            deleteDir()
+        }
+    }
+}
